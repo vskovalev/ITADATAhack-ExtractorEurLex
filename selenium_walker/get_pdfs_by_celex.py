@@ -1,4 +1,5 @@
 import time
+import pandas as pd
 from selenium import webdriver
 from pathlib import Path
 from selenium.webdriver.chrome.service import Service
@@ -8,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium_walker.interface_functions import button_click_by_element
 from functions.functions_os.names_extractor_from_folder_by_type \
     import names_extractor_from_folder_by_type
-
+from tqdm import tqdm
 
 
 def get_pdfs_by_celex(
@@ -17,30 +18,30 @@ def get_pdfs_by_celex(
     options,
 ):
     languagues = [
-        "BG",
-        "ES",
-        "CS",
-        "DA",
+        # "BG",
+        # "ES",
+        # "CS",
+        # "DA",
         "DE",
-        "ET",
-        "EL",
+        # "ET",
+        # "EL",
         "EN",
-        "FR",
-        "GA",
-        "HR",
+        # "FR",
+        # "GA",
+        # "HR",
         "IT",
-        "LV",
-        "LT",
-        "HU",
-        "MT",
-        "NL",
-        "PL",
-        "PT",
-        "RO",
-        "SK",
-        "SL",
-        "FI",
-        "SV",
+        # "LV",
+        # "LT",
+        # "HU",
+        # "MT",
+        # "NL",
+        # "PL",
+        # "PT",
+        # "RO",
+        # "SK",
+        # "SL",
+        # "FI",
+        # "SV",
     ]
 
     service = Service(executable_path=Path(exec_driver_path))
@@ -67,26 +68,16 @@ def get_pdfs_by_celex(
     )
 
     qid = driver.current_url.split("qid=")[1]
-    list_of_celexes_downloaded = []
-    with open("files/txts/celex_ids.txt") as f:
-        for line in f:
-            inner_list = [elt.replace("'", "").strip() for elt in line.split(",")]
-            list_of_celexes_downloaded.extend(inner_list)
-    set_of_downloaded = set(
-        list(
-            map(
-                lambda x: x.split("_")[1],
-                list_of_celexes_downloaded,
-            )
-        )
-    )
 
-    for celex in listOfCelex:
-        if celex not in set_of_downloaded:
-            for lang in languagues:
-                form = f"https://eur-lex.europa.eu/legal-content/{lang}/TXT/PDF/?uri=CELEX:{celex}&qid={qid}"
-                driver.get(form)
-                try:
-                    driver.find_element(By.XPATH, '//*[@class="alert alert-warning"]')
-                except:
-                    continue
+    set_of_downloaded = set(pd.read_csv('list_of_celexes.csv')['0'].to_list())
+    set_listOfCelex = set(listOfCelex)
+    set_listOfCelex -= set_of_downloaded
+
+    for celex in tqdm(set_listOfCelex):
+        for lang in languagues:
+            form = f"https://eur-lex.europa.eu/legal-content/{lang}/TXT/PDF/?uri=CELEX:{celex}&qid={qid}"
+            driver.get(form)
+            try:
+                driver.find_element(By.XPATH, '//*[@class="alert alert-warning"]')
+            except:
+                continue
