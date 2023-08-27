@@ -2,7 +2,7 @@ import threading
 import time
 import numpy as np
 from selenium_walker.get_pdfs_by_celex import get_pdfs_by_celex
-from functions.functions_os.kill_chrome_processes import kill_chrome_processes
+from algorithms.functions_os.kill_chrome_processes import kill_chrome_processes
 from selenium.webdriver.chrome.options import Options
 from selenium_walker.get_celexes import get_seria_of_celexes
 from pathlib import Path

@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium_walker.interface_functions import button_click_by_element
-from functions.functions_os.names_extractor_from_folder_by_type \
+from algorithms.functions_os.names_extractor_from_folder_by_type \
     import names_extractor_from_folder_by_type
 from tqdm import tqdm
 
